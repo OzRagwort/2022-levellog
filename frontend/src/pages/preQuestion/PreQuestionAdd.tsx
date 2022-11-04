@@ -1,75 +1,84 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
 import styled from 'styled-components';
 
-import useLevellog from 'hooks/useLevellog';
-import usePreQuestion from 'hooks/usePreQuestion';
+import usePreQuestionAdd from 'hooks/preQuestion/usePreQuestionAdd';
 
-import { MESSAGE, ROUTES_PATH } from 'constants/constants';
-
-import Button from 'components/@commons/Button';
-import ContentHeader from 'components/@commons/ContentHeader';
-import FlexBox from 'components/@commons/FlexBox';
-import UiEditor from 'components/@commons/UiEditor';
-import LevellogReport from 'components/levellogs/LevellogReport';
+import BottomBar from 'components/@commons/bottomBar/BottomBar';
+import UiEditor from 'components/@commons/markdownEditor/UiEditor';
+import LevellogContent from 'components/levellogs/LevellogContent';
 
 const PreQuestionAdd = () => {
-  const { levellog, getLevellog } = useLevellog();
-  const { preQuestionRef, onClickPreQuestionAddButton } = usePreQuestion();
-
-  const navigate = useNavigate();
-  const { teamId, levellogId } = useParams();
-
-  const handleClickPreQuestionAddButton = () => {
-    if (typeof teamId === 'string' && typeof levellogId === 'string') {
-      onClickPreQuestionAddButton({ teamId, levellogId });
-
-      return;
-    }
-    alert(MESSAGE.WRONG_ACCESS);
-    navigate(ROUTES_PATH.HOME);
-  };
-
-  useEffect(() => {
-    if (typeof teamId === 'string' && typeof levellogId === 'string') {
-      getLevellog({ teamId, levellogId });
-    }
-  }, []);
-
+  const { preQuestionRef, handleClickPreQuestionAddButton } = usePreQuestionAdd();
   return (
-    <FlexBox gap={1.875}>
-      <S.Container>
-        <ContentHeader title={'사전질문 작성'}>
-          <Button onClick={handleClickPreQuestionAddButton}>작성하기</Button>
-        </ContentHeader>
-        <S.Content>
-          <LevellogReport levellog={levellog} />
-          <S.UiEditorContainer>
-            <S.Title>사전 질문</S.Title>
-            <UiEditor
-              needToolbar={true}
-              autoFocus={true}
-              height={'60rem'}
-              contentRef={preQuestionRef}
-              initialEditType={'markdown'}
-            />
-          </S.UiEditorContainer>
-        </S.Content>
-      </S.Container>
-    </FlexBox>
+    <S.Container>
+      <S.Content>
+        <S.LeftContent>
+          <LevellogContent />
+        </S.LeftContent>
+        <S.RightContent>
+          <UiEditor
+            needToolbar={true}
+            autoFocus={true}
+            contentRef={preQuestionRef}
+            initialEditType={'markdown'}
+          />
+        </S.RightContent>
+      </S.Content>
+      <BottomBar buttonText={'작성하기'} handleClickRightButton={handleClickPreQuestionAddButton} />
+    </S.Container>
   );
 };
 
 const S = {
   Container: styled.div`
+    display: flex;
     overflow: auto;
-    width: 100%;
+    flex-direction: column;
+    height: calc(100vh - 8.75rem);
+    @media (min-width: 1620px) {
+      padding: 1.25rem calc((100vw - 100rem) / 2) 0 calc((100vw - 100rem) / 2);
+    }
+    @media (max-width: 1620px) {
+      padding: 1.25rem 1.25rem 0 1.25rem;
+    }
+    @media (max-width: 520px) {
+      height: max-content;
+    }
+  `,
+
+  Content: styled.div`
+    display: flex;
+    gap: 1rem;
+    height: calc(100vh - 14.375rem);
+    @media (max-width: 520px) {
+      flex-direction: column;
+    }
+  `,
+
+  LeftContent: styled.div`
+    width: 50%;
+    height: inherit;
+    @media (max-width: 520px) {
+      width: 100%;
+    }
+  `,
+
+  LevellogTitle: styled.h2`
+    margin-bottom: 1.875rem;
+    font-size: 1.875rem;
+  `,
+
+  RightContent: styled.div`
+    width: 50%;
+    height: inherit;
+    @media (max-width: 520px) {
+      width: 100%;
+      height: 31.25rem;
+    }
   `,
 
   UiEditorContainer: styled.div`
     overflow: auto;
-    width: 48rem;
+    width: 50%;
     @media (max-width: 520px) {
       max-width: 22.875rem;
     }
@@ -78,18 +87,6 @@ const S = {
   Title: styled.h2`
     margin-bottom: 1.875rem;
     font-size: 1.875rem;
-  `,
-
-  Content: styled.div`
-    display: flex;
-    overflow: auto;
-    gap: 2.5rem;
-    @media (max-width: 1024px) {
-      gap: 1.25rem;
-    }
-    @media (max-width: 520px) {
-      flex-direction: column;
-    }
   `,
 };
 

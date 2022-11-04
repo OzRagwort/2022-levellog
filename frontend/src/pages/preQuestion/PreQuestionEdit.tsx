@@ -1,81 +1,89 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Suspense } from 'react';
 
 import styled from 'styled-components';
 
-import useLevellog from 'hooks/useLevellog';
-import usePreQuestion from 'hooks/usePreQuestion';
+import usePreQuestionEdit from 'hooks/preQuestion/usePreQuestionEdit';
 
-import { MESSAGE, ROUTES_PATH } from 'constants/constants';
+import Loading from 'pages/status/Loading';
 
-import Button from 'components/@commons/Button';
-import ContentHeader from 'components/@commons/ContentHeader';
-import FlexBox from 'components/@commons/FlexBox';
-import UiEditor from 'components/@commons/UiEditor';
-import UiViewer from 'components/@commons/UiViewer';
-import LevellogReport from 'components/levellogs/LevellogReport';
+import BottomBar from 'components/@commons/bottomBar/BottomBar';
+import UiEditor from 'components/@commons/markdownEditor/UiEditor';
+import LevellogContent from 'components/levellogs/LevellogContent';
 
 const PreQuestionEdit = () => {
-  const { levellog, getLevellog } = useLevellog();
-  const { preQuestionRef, getPreQuestionOnRef, onClickPreQuestionEditButton } = usePreQuestion();
-
-  const navigate = useNavigate();
-  const { teamId, levellogId, preQuestionId } = useParams();
-
-  const handleClickPreQuestionEditButton = () => {
-    if (
-      typeof teamId === 'string' &&
-      typeof levellogId === 'string' &&
-      typeof preQuestionId === 'string'
-    ) {
-      onClickPreQuestionEditButton({ teamId, levellogId, preQuestionId });
-
-      return;
-    }
-    alert(MESSAGE.WRONG_ACCESS);
-    navigate(ROUTES_PATH.HOME);
-  };
-
-  useEffect(() => {
-    if (typeof teamId === 'string' && typeof levellogId === 'string') {
-      getLevellog({ teamId, levellogId });
-      getPreQuestionOnRef({ levellogId });
-
-      return;
-    }
-
-    alert(MESSAGE.WRONG_ACCESS);
-    navigate(ROUTES_PATH.HOME);
-  }, []);
+  const { preQuestionRef, handleClickPreQuestionEditButton } = usePreQuestionEdit();
 
   return (
-    <FlexBox gap={1.875}>
-      <S.Container>
-        <ContentHeader title={'사전질문 수정'}>
-          <Button onClick={handleClickPreQuestionEditButton}>수정하기</Button>
-        </ContentHeader>
-        <S.Content>
-          <LevellogReport levellog={levellog} />
-          <S.UiEditorContainer>
-            <S.Title>사전 질문</S.Title>
-            <UiEditor
-              needToolbar={true}
-              autoFocus={true}
-              height={'60rem'}
-              contentRef={preQuestionRef}
-              initialEditType={'markdown'}
-            />
-          </S.UiEditorContainer>
-        </S.Content>
-      </S.Container>
-    </FlexBox>
+    <S.Container>
+      <S.Content>
+        <S.LeftContent>
+          <Suspense fallback={<Loading />}>
+            <LevellogContent />
+          </Suspense>
+        </S.LeftContent>
+        <S.RightContent>
+          <UiEditor
+            needToolbar={true}
+            autoFocus={true}
+            contentRef={preQuestionRef}
+            initialEditType={'markdown'}
+          />
+        </S.RightContent>
+      </S.Content>
+      <BottomBar
+        buttonText={'작성하기'}
+        handleClickRightButton={handleClickPreQuestionEditButton}
+      />
+    </S.Container>
   );
 };
 
 const S = {
   Container: styled.div`
+    display: flex;
     overflow: auto;
-    width: 100%;
+    flex-direction: column;
+    height: calc(100vh - 8.75rem);
+    @media (min-width: 1620px) {
+      padding: 1.25rem calc((100vw - 100rem) / 2);
+    }
+    @media (max-width: 1620px) {
+      padding: 1.25rem 1.25rem 0 1.25rem;
+    }
+    @media (max-width: 520px) {
+      height: max-content;
+    }
+  `,
+
+  Content: styled.div`
+    display: flex;
+    gap: 1rem;
+    height: calc(100vh - 14.375rem);
+    @media (max-width: 520px) {
+      flex-direction: column;
+    }
+  `,
+
+  LeftContent: styled.div`
+    width: 50%;
+    height: inherit;
+    @media (max-width: 520px) {
+      width: 100%;
+    }
+  `,
+
+  LevellogTitle: styled.h2`
+    margin-bottom: 1.875rem;
+    font-size: 1.875rem;
+  `,
+
+  RightContent: styled.div`
+    width: 50%;
+    height: inherit;
+    @media (max-width: 520px) {
+      width: 100%;
+      height: 31.25rem;
+    }
   `,
 
   UiEditorContainer: styled.div`
@@ -83,23 +91,6 @@ const S = {
     width: 48rem;
     @media (max-width: 520px) {
       max-width: 22.875rem;
-    }
-  `,
-
-  Title: styled.h2`
-    margin-bottom: 1.875rem;
-    font-size: 1.875rem;
-  `,
-
-  Content: styled.div`
-    display: flex;
-    overflow: auto;
-    gap: 2.5rem;
-    @media (max-width: 1024px) {
-      gap: 1.25rem;
-    }
-    @media (max-width: 520px) {
-      flex-direction: column;
     }
   `,
 };

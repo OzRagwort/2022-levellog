@@ -7,29 +7,33 @@ import { GITHUB_LOGIN_URL, ROUTES_PATH } from 'constants/constants';
 import { UserContext, UserDispatchContext } from 'contexts/userContext';
 
 const useUser = () => {
+  const [isShowProfileDropdown, setIsShowProfileDropdown] = useState(false);
   const { id, nickname, profileUrl } = useContext(UserContext);
   const userInfoDispatch = useContext(UserDispatchContext);
-  const [isShowProfileDropdown, setIsShowProfileDropdown] = useState(false);
   const navigate = useNavigate();
 
-  const handleClickProfileImage = () => {
-    setIsShowProfileDropdown((prev) => !prev);
+  const handleClickProfile = () => {
+    if (id) {
+      setIsShowProfileDropdown((prev) => !prev);
+
+      return;
+    }
+    window.location.href = GITHUB_LOGIN_URL;
   };
 
-  const handleErrorProfileImage = (e: React.SyntheticEvent<EventTarget>) => {
+  const handleErrorProfile = (e: React.SyntheticEvent<EventTarget>) => {
     const target = e.target as HTMLImageElement;
     target.src = `${profileDefaultImage}`;
   };
 
   const handleClickLogoutButton = () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+
     userInfoDispatch({ id: '', nickname: '', profileUrl: '' });
     setIsShowProfileDropdown(false);
+    if (location.pathname === ROUTES_PATH.HOME) location.replace(ROUTES_PATH.HOME);
     navigate(ROUTES_PATH.HOME);
-  };
-
-  const handleClickLoginButton = () => {
-    window.location.href = GITHUB_LOGIN_URL;
   };
 
   return {
@@ -37,10 +41,9 @@ const useUser = () => {
     loginUserNickname: nickname,
     loginUserProfileUrl: profileUrl,
     isShowProfileDropdown,
-    handleClickProfileImage,
+    handleClickProfile,
     handleClickLogoutButton,
-    handleClickLoginButton,
-    handleErrorProfileImage,
+    handleErrorProfile,
     setIsShowProfileDropdown,
     userInfoDispatch,
   };
