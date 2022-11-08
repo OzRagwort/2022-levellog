@@ -1,9 +1,18 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		// maven 에서 0.16.1 버전 처리 누락 이슈
+		classpath ("org.ysb33r.gradle:grolifant:0.17.0")
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	// maven 에서 0.16.1 버전 처리 누락 이슈 해결까지 버전 다운그래이드
-	// https://github.com/asciidoctor/asciidoctor-gradle-plugin/pull/653
-	id 'org.asciidoctor.jvm.convert' version '3.3.1'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 	id "org.sonarqube" version "3.0"
 	id 'jacoco'
 	id 'java'
