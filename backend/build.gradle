@@ -1,7 +1,9 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	// maven 에서 0.16.1 버전 처리 누락 이슈 해결까지 버전 다운그래이드
+	// https://github.com/asciidoctor/asciidoctor-gradle-plugin/pull/653
+	id 'org.asciidoctor.jvm.convert' version '3.3.1'
 	id "org.sonarqube" version "3.0"
 	id 'jacoco'
 	id 'java'
@@ -44,7 +46,9 @@ dependencies {
 	testImplementation'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation'org.springframework.restdocs:spring-restdocs-mockmvc'
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	implementation 'org.ysb33r.gradle:grolifant:0.8'
+
+	// maven 에서 0.16.1 버전 처리 누락으로 0.16.2 버전 적용
+	testImplementation 'org.ysb33r.gradle:grolifant:0.16.2'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
