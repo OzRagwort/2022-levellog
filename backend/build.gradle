@@ -5,7 +5,7 @@ buildscript {
 
 	dependencies {
 		// maven 에서 0.16.1 버전 처리 누락 이슈
-		classpath ("org.ysb33r.gradle:grolifant:0.17.0")
+		classpath ("org.ysb33r.gradle:grolifant:0.16.2")
 	}
 }
 
