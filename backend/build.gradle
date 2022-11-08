@@ -44,6 +44,7 @@ dependencies {
 	testImplementation'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation'org.springframework.restdocs:spring-restdocs-mockmvc'
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	implementation 'org.ysb33r.gradle:grolifant:0.8'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
