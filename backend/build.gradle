@@ -1,3 +1,14 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		// maven 에서 0.16.1 버전 처리 누락 이슈
+		classpath ("org.ysb33r.gradle:grolifant:0.16.2")
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -44,6 +55,9 @@ dependencies {
 	testImplementation'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation'org.springframework.restdocs:spring-restdocs-mockmvc'
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	// maven 에서 0.16.1 버전 처리 누락으로 0.16.2 버전 적용
+//	testImplementation 'org.ysb33r.gradle:grolifant:0.16.2'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
